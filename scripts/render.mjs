@@ -24,12 +24,12 @@ async function main() {
     ["assets/fonts/instrument-serif.woff2", "instrument-serif.woff2"],
     ["assets/fonts/instrument-serif-italic.woff2", "instrument-serif-italic.woff2"],
     ["assets/fonts/inter-tight.woff2", "inter-tight.woff2"],
-    ["../brandkit/DepartureMono-Regular.woff2", "departure-mono.woff2"],
+    ["assets/fonts/departure-mono.woff2", "departure-mono.woff2"],
   ];
   for (const [src, dest] of fonts) {
     await fs.copyFile(path.resolve(src), path.join(pub, "fonts", dest));
   }
-  await fs.copyFile(path.join(BRAND, "taskmarket-lockup.png"), path.join(pub, "lockup.png"));
+  await fs.copyFile(path.resolve("assets/lockup.png"), path.join(pub, "lockup.png"));
   // The share image is committed, so CI needs no browser.
   try { await fs.copyFile(path.resolve("assets/og.png"), path.join(pub, "og.png")); } catch {}
 
