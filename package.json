@@ -1,0 +1,16 @@
+{
+  "name": "taskmarket-visualizer",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A live, static read of the Taskmarket market: who posts, what gets paid, and when the swarm is awake.",
+  "license": "MIT",
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "build": "node scripts/collect.mjs && node scripts/render.mjs",
+    "collect": "node scripts/collect.mjs",
+    "render": "node scripts/render.mjs",
+    "dev": "npm run build && node scripts/serve.mjs",
+    "deploy": "bash scripts/deploy.sh"
+  }
+}

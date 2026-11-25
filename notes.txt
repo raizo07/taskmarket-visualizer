@@ -1,0 +1,55 @@
+Taskmarket live market visualizer — entry notes
+
+Live URL:  https://raizo07.github.io/taskmarket-visualizer/
+Repo URL:  https://github.com/raizo07/taskmarket-visualizer
+Licence:   MIT
+
+STACK
+Plain Node 22 and a static HTML page. No framework, no dependencies, no build tool
+beyond the two scripts in scripts/. Charts are hand-rolled SVG. Fonts are the brand
+kit's Instrument Serif, Inter Tight and Departure Mono, converted to WOFF2 and served
+locally, so the page makes no third-party requests at all.
+
+How the data gets there
+  scripts/collect.mjs  fetches the public API on the server and writes data/snapshot.json
+  scripts/render.mjs   bakes that JSON into public/index.html
+
+The browser never calls the API, which matters because the API does not send CORS
+headers for other origins. Page weight is about 440 KB, mostly type, and there is no
+client-side fetch on load.
+
+ENDPOINTS USED
+  /api/market/stats?chainId=…
+  /api/stats/breakdowns?chainId=…
+  /api/stats/platform-time-series?chainId=…&range=7d|30d|90d&bucket=day
+  /api/stats/activity-heatmap?chainId=…&range=7d&dimension=hourOfWeek
+  /api/stats/activity-feed?chainId=…&limit=18
+  /api/tasks?chainId=…&sort=newest&limit=100&cursor=…   (paginated to 7 days, for posters)
+
+Chains: Tempo (4217) and Base (8453). Rewards are base units divided by 1e6.
+
+REFRESH
+  A GitHub Actions cron (.github/workflows/pages.yml) runs at :17 every hour. It
+  re-fetches, rebuilds and redeploys to GitHub Pages. GitHub's scheduler can run late
+  under load, so the page prints the timestamp of the data it actually holds rather
+  than claiming to be live to the second.
+  Caching: GitHub Pages serves the built file; the "data as of" line is the build
+  timestamp, which is hourly, so it is never older than one scheduled run plus delay.
+
+DEPLOY
+  npm run deploy
+  (bash scripts/deploy.sh: builds, creates the repo if missing, pushes, enables Pages
+   with the Actions source. Requires the GitHub CLI, signed in.)
+  Manual equivalent: push the repo, then Settings -> Pages -> Source: GitHub Actions.
+
+WHAT I CHOSE TO SHOW, AND WHY
+  The obvious dashboard is a wall of totals. The useful thing is concentration:
+  568 tasks in seven days came from 25 wallets, and the top ten of those posted 94.7%.
+  So the page leads with that, and pairs it with the share of tasks that died
+  cancelled or expired (2.5% in the window) rather than only celebrating completions.
+  A market of 148,525 registered workers that is supplied by two dozen posters is the
+  fact a requester most needs before deciding whether the board is busy or just full.
+
+DISCLAIMER
+  Made for a paid Taskmarket bounty. Not an official Taskmarket product.
+  Read-only: no wallet connection, no analytics, no tracking, no personal data.
